@@ -1,12 +1,9 @@
 package com.etron.models;
 
-import com.etron.models.enums.SubscriptionType;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,15 +19,24 @@ public class Subscription implements Serializable{
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id = 0L;
 
-    @Enumerated(EnumType.STRING)
-    private SubscriptionType subscriptionType;
+    private String subscriptionType;
 
     private String duration;
 
     @OneToMany(mappedBy = "subscription", cascade = CascadeType.ALL)
     private Set<Subscriber> subscriberList = new HashSet<>();
 
-    public Subscription(SubscriptionType subscriptionType, String duration, Set<Subscriber> subscriberList) {
+    private Double fraisDeBase;
+
+    private Double chargeAc;
+
+    private Double chargeDc;
+
+    private boolean isChargeRapideActive;
+
+    private double chargeRapide;
+
+    public Subscription(String subscriptionType, String duration, Set<Subscriber> subscriberList) {
         this.subscriptionType = subscriptionType;
         this.duration = duration;
         this.subscriberList = subscriberList;

@@ -8,6 +8,7 @@
         <version>2.6.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>com.etron</groupId>
     <artifactId>demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -15,7 +16,9 @@
     <description>Demo project for Spring Boot</description>
     <properties>
         <java.version>11</java.version>
+        <start-class>com.etron.ETronApplication</start-class>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -1,14 +1,11 @@
 package com.etron.dto;
 
 import com.etron.models.Subscriber;
-import com.etron.models.enums.SubscriptionType;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,7 +19,23 @@ public class SubscriptionDto implements Serializable {
 
     private Long id = 0L;
 
-    private SubscriptionType subscriptionType;
+    @NotNull(message = "subcription type cannot be null")
+    private String subscriptionType;
+
+    @NotNull(message = "Price cannot be null")
+    private Double fraisDeBase;
+
+    @NotNull(message = "Price cannot be null")
+    private Double chargeAc;
+
+    @NotNull(message = "Price cannot be null")
+    private Double chargeDc;
+
+    @NotNull(message = "Price cannot be null")
+    private boolean isChargeRapideActive;
+
+    @NotNull(message = "Price cannot be null")
+    private double chargeRapide;
 
     @NotBlank(message = "Duration cannot be null")
     private String duration;

@@ -2,17 +2,13 @@ package com.etron.models;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,14 +35,21 @@ public class Contrat implements Serializable {
 
 	private LocalDate dateFin;
 
+	@ManyToOne
+	@JoinColumn(name = "subscription_id")
+	private Subscription subscription;
 
-	public Contrat(int numeroContrat, LocalDate dateDebut, LocalDate dateFin, Set<Subscriber> subscriptionList,
+	@ManyToOne
+	@JoinColumn(name = "subscriber_id")
+	private Subscriber subscriber;
+
+	public Contrat(int numeroContrat, LocalDate dateDebut, LocalDate dateFin, Subscription subscription,
 			Subscriber subscriber) {
 		super();
 		this.numeroContrat = numeroContrat;
 		this.dateDebut = dateDebut;
 		this.dateFin = dateFin;
-		this.subscriptionList = subscriptionList;
+		this.subscription = subscription;
 		this.subscriber = subscriber;
 	}
 
