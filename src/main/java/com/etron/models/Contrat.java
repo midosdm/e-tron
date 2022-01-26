@@ -39,12 +39,6 @@ public class Contrat implements Serializable {
 
 	private LocalDate dateFin;
 
-	@OneToMany(mappedBy = "contrat", cascade = CascadeType.ALL)
-	private Set<Subscriber> subscriptionList = new HashSet<>();
-
-	@ManyToOne
-	@JoinColumn(name = "subscriber_id")
-	private Subscriber subscriber;
 
 	public Contrat(int numeroContrat, LocalDate dateDebut, LocalDate dateFin, Set<Subscriber> subscriptionList,
 			Subscriber subscriber) {

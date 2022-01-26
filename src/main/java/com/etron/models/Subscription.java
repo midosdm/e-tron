@@ -29,4 +29,10 @@ public class Subscription implements Serializable{
 
     @OneToMany(mappedBy = "subscription", cascade = CascadeType.ALL)
     private Set<Subscriber> subscriberList = new HashSet<>();
+
+    public Subscription(SubscriptionType subscriptionType, String duration, Set<Subscriber> subscriberList) {
+        this.subscriptionType = subscriptionType;
+        this.duration = duration;
+        this.subscriberList = subscriberList;
+    }
 }
