@@ -36,7 +36,7 @@ public class Subscription implements Serializable{
 
     private double chargeRapide;
 
-    public Subscription(String subscriptionType, String duration, Set<Subscriber> subscriberList) {
+    public Subscription(String subscriptionType, String duration,Double fraisDeBase, Double chargeAc, Double chargeDc, boolean isChargeRapideActive, Double chargeRapide) {
         this.subscriptionType = subscriptionType;
         this.duration = duration;
         this.subscriberList = subscriberList;

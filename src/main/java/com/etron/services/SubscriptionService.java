@@ -9,11 +9,13 @@ import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class SubscriptionService {
     @Autowired
     SubscriptionRepository subscriptionRepository;
@@ -69,7 +71,8 @@ public class SubscriptionService {
                 throw new TypeIsTakenException(Subscription.class, subscription.getSubscriptionType().toString());
             }
 
-            Subscription newSubscription = subscriptionRepository.save(new Subscription(subscription.getSubscriptionType(), subscription.getDuration(),subscription.getSubscriberList()));
+            Subscription newSubscription = subscriptionRepository.save(new Subscription(subscription.getSubscriptionType(), subscription.getDuration(), subscription.getFraisDeBase(),
+                    subscription.getChargeAc(), subscription.getChargeDc(), subscription.isChargeRapideActive(), subscription.getChargeRapide()));
             return new ResponseEntity<>(newSubscription, HttpStatus.CREATED);
 
         }catch(Exception e){
@@ -86,6 +89,11 @@ public class SubscriptionService {
             newSubscription.setSubscriptionType(subscription.getSubscriptionType());
             newSubscription.setSubscriberList(subscription.getSubscriberList());
             newSubscription.setDuration(subscription.getDuration());
+            newSubscription.setFraisDeBase(subscription.getFraisDeBase());
+            newSubscription.setChargeAc(subscription.getChargeAc());
+            newSubscription.setChargeDc(subscription.getChargeDc());
+            newSubscription.setChargeRapide(subscription.getChargeRapide());
+            //newSubscription.isChargeRapideActive(subscription.isChargeRapideActive);
             return new ResponseEntity<>(subscriptionRepository.save(newSubscription), HttpStatus.OK);
 
         } else {
