@@ -11,29 +11,53 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.etron.models.Contrat;
+import com.etron.models.Subscriber;
+import com.etron.models.Subscription;
 import com.etron.repositories.ContratRepository;
+import com.etron.repositories.SubscriberRepository;
+import com.etron.repositories.SubscriptionRepository;
 
 @Service
 public class ContratService {
 
 	@Autowired
 	ContratRepository contratRepository;
+	@Autowired
+	SubscriberRepository subscriberRepository;
+	@Autowired
+	SubscriptionRepository subscriptionRepository;
 
-	public ResponseEntity<List<Contrat>> getAllContrats(int numeroContrat) {
+	public ResponseEntity<List<Contrat>> getAllContrats() {
 
 		try {
 			List<Contrat> contrats = new ArrayList<Contrat>();
 
-			if (numeroContrat == 0)
-				contratRepository.findAll().forEach(contrats::add);
-			else
-				contrats.add(contratRepository.findByNumeroContrat(numeroContrat));
+			contratRepository.findAll().forEach(contrats::add);
 
 			if (contrats.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
 
 			return new ResponseEntity<>(contrats, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	public ResponseEntity<List<Contrat>> getContratByNumero(int numeroContrat) {
+		try {
+			List<Contrat> contrat = new ArrayList<Contrat>();
+
+			if (numeroContrat == 0)
+				return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+			else
+				contrat.add(contratRepository.findByNumeroContrat(numeroContrat));
+
+			if (contrat.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+
+			return new ResponseEntity<>(contrat, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -52,17 +76,34 @@ public class ContratService {
 		}
 	}
 
-	public ResponseEntity<Contrat> createContrat(Contrat contrat) {
+	public ResponseEntity<List<Contrat>> getByDateFin(LocalDate dateFin) {
+
 		try {
-			if (contratRepository.existsByNumeroContrat(contrat.getNumeroContrat())) {
-				return new ResponseEntity<>(null, HttpStatus.CONFLICT);
-			}
+			List<Contrat> contrats = new ArrayList<Contrat>();
 
-			Contrat _contrat = contratRepository.save(new Contrat(contrat.getNumeroContrat(), contrat.getDateDebut(),
-					contrat.getDateFin(), contrat.getSubscriptionList(), contrat.getSubscriber()));
+			contratRepository.findByDateDebut(dateFin).forEach(contrats::add);
 
-			return new ResponseEntity<>(_contrat, HttpStatus.CREATED);
+			return new ResponseEntity<>(contrats, HttpStatus.OK);
 		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	public ResponseEntity<Contrat> createContrat(Long idSubscription, Long idSubscriber, int numeroContrat,
+			LocalDate dateDebut, LocalDate dateFin) {
+
+		if (contratRepository.existsByNumeroContrat(numeroContrat)) {
+			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+		}
+
+		Optional<Subscriber> subscriber = subscriberRepository.findById(idSubscriber);
+		Optional<Subscription> subscription = subscriptionRepository.findById(idSubscription);
+
+		if (subscriber.isPresent() && subscription.isPresent()) {
+			Contrat _contrat = contratRepository
+					.save(new Contrat(numeroContrat, dateDebut, dateFin, subscription.get(), subscriber.get()));
+			return new ResponseEntity<>(_contrat, HttpStatus.CREATED);
+		} else {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
