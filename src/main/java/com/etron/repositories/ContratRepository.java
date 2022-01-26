@@ -12,4 +12,6 @@ public interface ContratRepository extends JpaRepository<Contrat, Long> {
 	Contrat findByNumeroContrat(int numero);
 
 	List<Contrat> findByDateDebut(LocalDate dateDebut);
+
+	Boolean existsByNumeroContrat(int numeroContrat);
 }

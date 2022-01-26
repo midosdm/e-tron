@@ -54,6 +54,9 @@ public class ContratService {
 
 	public ResponseEntity<Contrat> createContrat(Contrat contrat) {
 		try {
+			if (contratRepository.existsByNumeroContrat(contrat.getNumeroContrat())) {
+				return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+			}
 
 			Contrat _contrat = contratRepository.save(new Contrat(contrat.getNumeroContrat(), contrat.getDateDebut(),
 					contrat.getDateFin(), contrat.getSubscriptionList(), contrat.getSubscriber()));
@@ -79,6 +82,10 @@ public class ContratService {
 
 		if (contratData.isPresent()) {
 			Contrat _contrat = contratData.get();
+
+			_contrat.setDateDebut(contrat.getDateDebut());
+			_contrat.setDateFin(contrat.getDateFin());
+			_contrat.setNumeroContrat(contrat.getNumeroContrat());
 
 			return new ResponseEntity<>(contratRepository.save(_contrat), HttpStatus.OK);
 
