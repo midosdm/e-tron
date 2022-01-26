@@ -75,7 +75,7 @@ public class AdminService {
 		// var vToken = verificationTokenService.createVerificationToken(a);
 
 		// mailService.sendMail(vToken);
-
+//jjjjjjjj
 		// return a;
 		return null;
 	}
