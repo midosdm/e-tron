@@ -7,7 +7,6 @@ import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,7 +47,8 @@ public class SubscriberController {
 
 	@GetMapping
 	public List<SubscriberDto> getAllSubscribers() {
-		List<Subscriber> subscriberList = subscriberService.getAllSubscribers().getBody();
+		@SuppressWarnings("unchecked")
+		List<Subscriber> subscriberList = (List<Subscriber>) subscriberService.getAllSubscribers().getBody();
 		return subscriberList.stream().map(this::convertToDto).collect(Collectors.toList());
 	}
 
@@ -61,7 +61,7 @@ public class SubscriberController {
 	@PostMapping
 	public SubscriberDto createSubscriber(@Valid @RequestBody SubscriberDto newSubscriberDto) {
 		var subscriber = convertToEntity(newSubscriberDto);
-		var newSubscriber = subscriberService.createSubscriber(subscriber).getBody();
+		var newSubscriber = (Subscriber) subscriberService.createSubscriber(subscriber).getBody();
 		return convertToDto(newSubscriber);
 	}
 
@@ -69,7 +69,7 @@ public class SubscriberController {
 	public SubscriberDto updateAdmin(@PathVariable("adminId") Long subscriberId,
 			@Valid @RequestBody SubscriberDtoWithoutPassoword subscriberDto) {
 		var subscriber = convertToEntity(subscriberDto);
-		var newSubscriber = subscriberService.updateSubscriber(subscriberId, subscriber).getBody();
+		var newSubscriber = (Subscriber) subscriberService.updateSubscriber(subscriberId, subscriber).getBody();
 		return convertToDto(newSubscriber);
 	}
 
@@ -80,12 +80,12 @@ public class SubscriberController {
 	}
 
 	@DeleteMapping(path = "{subscriberId}")
-	public void deleteAdmin(@PathVariable("subscriberId") Long subscriberId) {
-		subscriberService.deleteSubscriber(subscriberId);
+	public ResponseEntity<?> deleteAdmin(@PathVariable("subscriberId") Long subscriberId) {
+		return subscriberService.deleteSubscriber(subscriberId);
 	}
 
 	@DeleteMapping
-	public ResponseEntity<HttpStatus> deleteAllAdmins() {
+	public ResponseEntity<?> deleteAllAdmins() {
 		return subscriberService.deleteAllSubscribers();
 	}
 

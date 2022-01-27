@@ -10,12 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.etron.exceptions.MessageResponse;
 import com.etron.models.Admin;
 import com.etron.models.Role;
 import com.etron.models.enums.AppRole;
 import com.etron.repositories.AdminRepository;
-import com.etron.repositories.RoleRepository;
 import com.etron.repositories.AppUserRepository;
+import com.etron.repositories.RoleRepository;
 
 @Service
 public class AdminService {
@@ -29,7 +30,7 @@ public class AdminService {
 
 	private PasswordEncoder passwordEncoder;
 
-	public ResponseEntity<List<Admin>> getAllAdmins() {
+	public ResponseEntity<?> getAllAdmins() {
 
 		try {
 			List<Admin> admins = new ArrayList<Admin>();
@@ -37,12 +38,13 @@ public class AdminService {
 			adminRepository.findAll().forEach(admins::add);
 
 			if (admins.isEmpty()) {
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+				return new ResponseEntity<>(admins, HttpStatus.NO_CONTENT);
 			}
 
 			return new ResponseEntity<>(admins, HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new MessageResponse("Error: INTERNAL SERVER ERROR"));
 		}
 	}
 
@@ -56,10 +58,11 @@ public class AdminService {
 		}
 	}
 
-	public ResponseEntity<Admin> createAdmin(Admin admin) {
+	public ResponseEntity<?> createAdmin(Admin admin) {
 
 		if (appUserRepository.existsByEmail(admin.getEmail().toLowerCase())) {
-			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+			return ResponseEntity.status(HttpStatus.NO_CONTENT)
+					.body(new MessageResponse("Warn: cet email existe déja"));
 		}
 
 		var role = roleRepository.findByAppRole(AppRole.ADMIN)
@@ -69,19 +72,19 @@ public class AdminService {
 		admin.setPassword(passwordEncoder.encode(admin.getPassword()));
 		var a = adminRepository.save(admin);
 
-		//var vToken = verificationTokenService.createVerificationToken(a);
-
+		// var vToken = verificationTokenService.createVerificationToken(a);
 
 		return new ResponseEntity<>(a, HttpStatus.OK);
 	}
 
-	public ResponseEntity<Admin> updateAdmin(Long id, Admin newAdmin) {
+	public ResponseEntity<?> updateAdmin(Long id, Admin newAdmin) {
 
 		var oldAdmin = getAdminById(id).getBody();
 
 		if (appUserRepository.existsByEmail(newAdmin.getEmail().toLowerCase())
 				&& !newAdmin.getEmail().equals(oldAdmin.getEmail().toLowerCase())) {
-			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+			return ResponseEntity.status(HttpStatus.NO_CONTENT)
+					.body(new MessageResponse("Warn: cet email existe déja"));
 		}
 
 		oldAdmin.setEmail(newAdmin.getEmail());
@@ -89,34 +92,35 @@ public class AdminService {
 		oldAdmin.setFirstName(newAdmin.getFirstName());
 		oldAdmin.setLastName(newAdmin.getLastName());
 		var a = adminRepository.save(oldAdmin);
-		//var vToken = verificationTokenService.createVerificationToken(a);
+		// var vToken = verificationTokenService.createVerificationToken(a);
 		return new ResponseEntity<>(a, HttpStatus.OK);
 	}
-
 
 	public void updatePassword(Long id, String password) {
 		var encPassword = passwordEncoder.encode(password);
 		adminRepository.updatePassword(id, encPassword);
 	}
 
-
-	public ResponseEntity<HttpStatus> deleteAdmin(Long id) {
+	public ResponseEntity<?> deleteAdmin(Long id) {
 
 		try {
 			adminRepository.deleteById(id);
 
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new MessageResponse("Error: INTERNAL SERVER ERROR"));
 		}
 	}
 
-	public ResponseEntity<HttpStatus> deleteAllAdmins() {
+	public ResponseEntity<?> deleteAllAdmins() {
 		try {
 			adminRepository.deleteAll();
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			return ResponseEntity.status(HttpStatus.NO_CONTENT)
+					.body(new MessageResponse("Warn: Aucun admin dans la BDD"));
 		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new MessageResponse("Error: INTERNAL SERVER ERROR"));
 		}
 	}
 

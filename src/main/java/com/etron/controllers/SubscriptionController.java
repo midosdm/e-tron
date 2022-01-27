@@ -1,12 +1,9 @@
 package com.etron.controllers;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,33 +31,33 @@ public class SubscriptionController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<Subscription>> getAllSubscriptions() {
+	public ResponseEntity<?> getAllSubscriptions() {
 		return subscriptionService.getAllSubscriptions();
 	}
 
 	@GetMapping(path = "{subscriptionId}")
-	public ResponseEntity<Subscription> getSubscription(@PathVariable("subscriptionId") Long subscriptionId) {
+	public ResponseEntity<?> getSubscription(@PathVariable("subscriptionId") Long subscriptionId) {
 		return subscriptionService.getById(subscriptionId);
 	}
 
 	@PostMapping
-	public ResponseEntity<Subscription> createSubscription(@Valid @RequestBody Subscription subscription) {
+	public ResponseEntity<?> createSubscription(@Valid @RequestBody Subscription subscription) {
 		return subscriptionService.createSubscription(subscription);
 	}
 
 	@PutMapping(path = "{subscriptionId}")
-	public ResponseEntity<Subscription> updateSubscription(@PathVariable("subscriptionId") Long subscriptionId,
+	public ResponseEntity<?> updateSubscription(@PathVariable("subscriptionId") Long subscriptionId,
 			@Valid @RequestBody Subscription subscription) {
 		return subscriptionService.updateSubscription(subscriptionId, subscription);
 	}
 
 	@DeleteMapping(path = "{subscriptionId}")
-	public ResponseEntity<HttpStatus> deleteSubscription(@PathVariable("subscriptionId") Long subscriptionId) {
+	public ResponseEntity<?> deleteSubscription(@PathVariable("subscriptionId") Long subscriptionId) {
 		return subscriptionService.deleteSubscription(subscriptionId);
 	}
 
 	@DeleteMapping()
-	public ResponseEntity<HttpStatus> deleteAllSubscriptions() {
+	public ResponseEntity<?> deleteAllSubscriptions() {
 		return subscriptionService.deleteAllSubscriptions();
 	}
 

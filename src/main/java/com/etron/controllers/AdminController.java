@@ -7,7 +7,6 @@ import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,9 +47,15 @@ public class AdminController {
 
 	@GetMapping
 	public List<AdminDto> getAllAdmins() {
-		List<Admin> adminList = adminService.getAllAdmins().getBody();
+		@SuppressWarnings("unchecked")
+		List<Admin> adminList = (List<Admin>) adminService.getAllAdmins().getBody();
 		return adminList.stream().map(this::convertToDto).collect(Collectors.toList());
 	}
+	/*
+	 * if (adminList.isEmpty()) { return new
+	 * ResponseEntity<>(HttpStatus.NO_CONTENT); } else { return
+	 * adminList.stream().map(this::convertToDto).collect(Collectors.toList()); }
+	 */
 
 	@GetMapping(path = "{adminId}")
 	public AdminDto getAdminById(@PathVariable("adminId") Long adminId) {
@@ -61,7 +66,7 @@ public class AdminController {
 	@PostMapping
 	public AdminDto createAdmin(@Valid @RequestBody AdminDto newAdminDto) {
 		var admin = convertToEntity(newAdminDto);
-		var newAdmin = adminService.createAdmin(admin).getBody();
+		var newAdmin = (Admin) adminService.createAdmin(admin).getBody();
 		return convertToDto(newAdmin);
 	}
 
@@ -69,7 +74,7 @@ public class AdminController {
 	public AdminDto updateAdmin(@PathVariable("adminId") Long adminId,
 			@Valid @RequestBody AdminDtoWithoutPassword adminDto) {
 		var admin = convertToEntity(adminDto);
-		var newAdmin = adminService.updateAdmin(adminId, admin).getBody();
+		var newAdmin = (Admin) adminService.updateAdmin(adminId, admin).getBody();
 		return convertToDto(newAdmin);
 	}
 
@@ -80,12 +85,12 @@ public class AdminController {
 	}
 
 	@DeleteMapping(path = "{adminId}")
-	public void deleteAdmin(@PathVariable("adminId") Long adminId) {
-		adminService.deleteAdmin(adminId);
+	public ResponseEntity<?> deleteAdmin(@PathVariable("adminId") Long adminId) {
+		return adminService.deleteAdmin(adminId);
 	}
 
 	@DeleteMapping
-	public ResponseEntity<HttpStatus> deleteAllAdmins() {
+	public ResponseEntity<?> deleteAllAdmins() {
 		return adminService.deleteAllAdmins();
 	}
 
