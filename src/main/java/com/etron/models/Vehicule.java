@@ -20,8 +20,8 @@ public class Vehicule {
 
     private String matricule;
 
-    @ManyToOne
-    @MapsId("id")
-    @JoinColumn(name = "subscriber_id")
-    private Subscriber subscriber;
+//    @ManyToOne
+//    @MapsId("id")
+//    @JoinColumn(name = "subscriber_id")
+//    private Subscriber subscriber;
 }

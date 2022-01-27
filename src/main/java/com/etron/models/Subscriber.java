@@ -30,8 +30,10 @@ public class Subscriber extends AppUser implements Serializable {
 	@JoinColumn(name = "subscription_id")
 	private Subscription subscription;
 
-	@OneToMany(mappedBy = "subscriber", cascade = CascadeType.ALL)
-	private Set<Vehicule> vehiculeList = new HashSet<>();
+	private String matricule;
+
+//	@OneToMany(mappedBy = "subscriber", cascade = CascadeType.ALL)
+//	private Set<Vehicule> vehiculeList = new HashSet<>();
 
 	public Subscriber(String lastName, String firstName, LocalDateTime birthDate, Subscription subscription) {
 		super();

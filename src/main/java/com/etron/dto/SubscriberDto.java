@@ -27,6 +27,9 @@ public class SubscriberDto implements Serializable {
     @NotBlank(message = "Last name cannot be null")
     private String firstName;
 
+    @NotBlank(message = "matricule cannot be null")
+    private String matricule;
+
     @NotBlank(message = "email cannot be null")
     @Email(message = "Invalid email")
     private String email;
