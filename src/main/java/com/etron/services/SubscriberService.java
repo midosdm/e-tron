@@ -36,4 +36,20 @@ public class SubscriberService {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+	public ResponseEntity<Subscriber> createSubscriber(Subscriber subscriber) {
+
+		if (subscriberRepository.existsByFirstName(subscriber.getFirstName())
+				&& subscriberRepository.existsByLastName(subscriber.getLastName())) {
+			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+		}
+		try {
+
+			Subscriber _subscriber = subscriberRepository.save(new Subscriber());
+
+			return new ResponseEntity<>(_subscriber, HttpStatus.CREATED);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

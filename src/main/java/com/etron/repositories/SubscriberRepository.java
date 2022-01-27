@@ -9,4 +9,8 @@ import com.etron.models.Subscriber;
 public interface SubscriberRepository extends JpaRepository<Subscriber, Long> {
 
 	List<Subscriber> findByFirstNameContaining(String nom);
+
+	Boolean existsByFirstName(String firstName);
+
+	Boolean existsByLastName(String lastName);
 }
