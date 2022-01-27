@@ -5,6 +5,7 @@ import com.etron.models.Subscription;
 import com.etron.services.SubscriptionService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +21,7 @@ public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
 
+
     @Autowired
     public SubscriptionController(ModelMapper modelMapper, SubscriptionService subscriptionService){
         this.modelMapper = modelMapper;
@@ -27,16 +29,9 @@ public class SubscriptionController {
     }
 
     @GetMapping
-    public List<SubscriptionDto> getSubscriptions(){
-        var subscriptions = subscriptionService.getAllSubscriptions();
-        return subscriptions.stream().map(this::convertToDTO).collect(Collectors.toList());
-
+    public ResponseEntity<List<Subscription>> getSubscriptions(){
+        return subscriptionService.getAllSubscriptions();
     }
 
-    private SubscriptionDto convertToDto(Subscription subscription){
-        return modelMapper.map(subscription, SubscriptionDto.class);
-    }
-    private Subscription convertToEntity(SubscriptionDto productDto) {
-        return modelMapper.map(productDto, Subscription.class);
-    }
+
 }
