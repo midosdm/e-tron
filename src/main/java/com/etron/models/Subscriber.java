@@ -20,7 +20,7 @@ import lombok.experimental.SuperBuilder;
 @ToString
 @NoArgsConstructor
 @Entity
-public class Subscriber extends User implements Serializable {
+public class Subscriber extends AppUser implements Serializable {
 
 	private String lastName;
 

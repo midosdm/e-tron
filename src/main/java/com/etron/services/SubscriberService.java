@@ -2,10 +2,16 @@ package com.etron.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import com.etron.models.Role;
+import com.etron.models.enums.AppRole;
+import com.etron.repositories.RoleRepository;
+import com.etron.repositories.AppUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.etron.models.Subscriber;
@@ -16,6 +22,12 @@ public class SubscriberService {
 
 	@Autowired
 	SubscriberRepository subscriberRepository;
+	@Autowired
+	private AppUserRepository appUserRepository;
+	@Autowired
+	private RoleRepository roleRepository;
+
+	private PasswordEncoder passwordEncoder;
 
 	public ResponseEntity<List<Subscriber>> getAllSubscribers(String firstName) {
 
@@ -37,19 +49,70 @@ public class SubscriberService {
 		}
 	}
 
+	public ResponseEntity<Subscriber> getSubscriberById(Long id) {
+		Optional<Subscriber> subscriber = subscriberRepository.findById(id);
+
+		if (subscriber.isPresent()) {
+			return new ResponseEntity<>(subscriber.get(), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+
 	public ResponseEntity<Subscriber> createSubscriber(Subscriber subscriber) {
 
-		if (subscriberRepository.existsByFirstName(subscriber.getFirstName())
-				&& subscriberRepository.existsByLastName(subscriber.getLastName())) {
+		if (subscriberRepository.existsByEmail(subscriber.getEmail().toLowerCase())) {
 			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
 		}
+		var role = roleRepository.findByAppRole(AppRole.SUBSCRIBER)
+				.orElseGet(() -> roleRepository.save(Role.builder().appRole(AppRole.SUBSCRIBER).build()));
+
+		subscriber.setRole(role);
+		subscriber.setPassword(passwordEncoder.encode(subscriber.getPassword()));
+		var s = subscriberRepository.save(subscriber);
+		return new ResponseEntity<>(s, HttpStatus.OK);
+	}
+
+	public ResponseEntity<Subscriber> updateAdmin(Long id, Subscriber newSubscriber) {
+
+		var oldSubscriber = getSubscriberById(id).getBody();
+
+		if (appUserRepository.existsByEmail(newSubscriber.getEmail().toLowerCase())
+				&& !newSubscriber.getEmail().equals(oldSubscriber.getEmail().toLowerCase())) {
+			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+		}
+
+		oldSubscriber.setEmail(newSubscriber.getEmail());
+		oldSubscriber.setBirthDate(newSubscriber.getBirthDate());
+		oldSubscriber.setFirstName(newSubscriber.getFirstName());
+		oldSubscriber.setLastName(newSubscriber.getLastName());
+		var a = subscriberRepository.save(oldSubscriber);
+		//var vToken = verificationTokenService.createVerificationToken(a);
+		return new ResponseEntity<>(a, HttpStatus.OK);
+	}
+
+	public void updatePassword(Long id, String password) {
+		var encPassword = passwordEncoder.encode(password);
+		subscriberRepository.updatePassword(id, encPassword);
+	}
+
+	public ResponseEntity<HttpStatus> deleteAdmin(Long id) {
+
 		try {
+			subscriberRepository.deleteById(id);
 
-			Subscriber _subscriber = subscriberRepository.save(new Subscriber());
-
-			return new ResponseEntity<>(_subscriber, HttpStatus.CREATED);
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	public ResponseEntity<HttpStatus> deleteAllAdmins() {
+		try {
+			subscriberRepository.deleteAll();
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 }

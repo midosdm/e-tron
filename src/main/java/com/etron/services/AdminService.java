@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.etron.models.Admin;
@@ -14,7 +15,7 @@ import com.etron.models.Role;
 import com.etron.models.enums.AppRole;
 import com.etron.repositories.AdminRepository;
 import com.etron.repositories.RoleRepository;
-import com.etron.repositories.UserRepository;
+import com.etron.repositories.AppUserRepository;
 
 @Service
 public class AdminService {
@@ -22,12 +23,13 @@ public class AdminService {
 	@Autowired
 	private AdminRepository adminRepository;
 	@Autowired
-	private UserRepository userRepository;
+	private AppUserRepository appUserRepository;
 	@Autowired
 	private RoleRepository roleRepository;
-	// private final PasswordEncoder passwordEncoder;
 
-	public ResponseEntity<List<Admin>> getAllAdmins(String prenom) {
+	private PasswordEncoder passwordEncoder;
+
+	public ResponseEntity<List<Admin>> getAllAdmins() {
 
 		try {
 			List<Admin> admins = new ArrayList<Admin>();
@@ -56,7 +58,7 @@ public class AdminService {
 
 	public ResponseEntity<Admin> createAdmin(Admin admin) {
 
-		if (userRepository.existsByEmail(admin.getEmail().toLowerCase())) {
+		if (appUserRepository.existsByEmail(admin.getEmail().toLowerCase())) {
 			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
 		}
 
@@ -64,21 +66,39 @@ public class AdminService {
 				.orElseGet(() -> roleRepository.save(Role.builder().appRole(AppRole.ADMIN).build()));
 
 		admin.setRole(role);
-		/*
-		 * admin.setPassword(passwordEncoder.encode(admin.getPassword()));
-		 * admin.setBeginDate(LocalDate.now());
-		 */
+		admin.setPassword(passwordEncoder.encode(admin.getPassword()));
 		var a = adminRepository.save(admin);
-		// admin.setStatus(ACTIVE);
-		// admin.setEnabled(true);
 
-		// var vToken = verificationTokenService.createVerificationToken(a);
+		//var vToken = verificationTokenService.createVerificationToken(a);
 
-		// mailService.sendMail(vToken);
-//jjjjjjjj
-		// return a;
-		return null;
+
+		return new ResponseEntity<>(a, HttpStatus.OK);
 	}
+
+	public ResponseEntity<Admin> updateAdmin(Long id, Admin newAdmin) {
+
+		var oldAdmin = getAdminById(id).getBody();
+
+		if (appUserRepository.existsByEmail(newAdmin.getEmail().toLowerCase())
+				&& !newAdmin.getEmail().equals(oldAdmin.getEmail().toLowerCase())) {
+			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+		}
+
+		oldAdmin.setEmail(newAdmin.getEmail());
+		oldAdmin.setBirthDate(newAdmin.getBirthDate());
+		oldAdmin.setFirstName(newAdmin.getFirstName());
+		oldAdmin.setLastName(newAdmin.getLastName());
+		var a = adminRepository.save(oldAdmin);
+		//var vToken = verificationTokenService.createVerificationToken(a);
+		return new ResponseEntity<>(a, HttpStatus.OK);
+	}
+
+
+	public void updatePassword(Long id, String password) {
+		var encPassword = passwordEncoder.encode(password);
+		adminRepository.updatePassword(id, encPassword);
+	}
+
 
 	public ResponseEntity<HttpStatus> deleteAdmin(Long id) {
 

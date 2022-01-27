@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Admin extends User implements Serializable {
+public class Admin extends AppUser implements Serializable {
     private String lastName;
 
     private String firstName;
