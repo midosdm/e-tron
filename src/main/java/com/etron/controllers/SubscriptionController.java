@@ -54,7 +54,7 @@ public class SubscriptionController {
 		return subscriptionService.updateSubscription(subscriptionId, subscription);
 	}
 
-	@DeleteMapping(path = "{subscriptionId")
+	@DeleteMapping(path = "{subscriptionId}")
 	public ResponseEntity<HttpStatus> deleteSubscription(@PathVariable("subscriptionId") Long subscriptionId) {
 		return subscriptionService.deleteSubscription(subscriptionId);
 	}

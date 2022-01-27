@@ -44,8 +44,8 @@ public class ContratController {
 		return contratService.getContratById(id);
 	}
 
-	@GetMapping("/{id}")
-	public ResponseEntity<Contrat> getContratByNumero(@PathVariable("id") int numeroContrat) {
+	@GetMapping("/{numeroContrat}")
+	public ResponseEntity<Contrat> getContratByNumero(@PathVariable("numeroContrat") int numeroContrat) {
 		return contratService.getContratByNumero(numeroContrat);
 	}
 
