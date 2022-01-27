@@ -9,7 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,10 +31,15 @@ public class Contrat implements Serializable {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Long id = 0L;
 
+	@NotBlank(message = "Number contrat cnnot be null")
 	private int numeroContrat;
 
+	@NotBlank(message = "date debut cannot be null")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDate dateDebut;
 
+	@NotBlank(message = "date fin cannot be null")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 	private LocalDate dateFin;
 
 	@ManyToOne

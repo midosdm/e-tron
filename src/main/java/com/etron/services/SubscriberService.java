@@ -83,6 +83,7 @@ public class SubscriberService {
 		oldSubscriber.setBirthDate(newSubscriber.getBirthDate());
 		oldSubscriber.setFirstName(newSubscriber.getFirstName());
 		oldSubscriber.setLastName(newSubscriber.getLastName());
+		oldSubscriber.setMatricule(newSubscriber.getMatricule());
 		var a = subscriberRepository.save(oldSubscriber);
 		// var vToken = verificationTokenService.createVerificationToken(a);
 		return new ResponseEntity<>(a, HttpStatus.OK);
