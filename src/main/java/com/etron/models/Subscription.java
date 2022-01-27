@@ -17,7 +17,7 @@ import java.util.Set;
 @Entity
 public class Subscription implements Serializable{
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id = 0L;
 
     @NotNull(message = "subcription type cannot be null")
@@ -45,6 +45,10 @@ public class Subscription implements Serializable{
     public Subscription(String subscriptionType, String duration,Double fraisDeBase, Double chargeAc, Double chargeDc, boolean isChargeRapideActive, Double chargeRapide) {
         this.subscriptionType = subscriptionType;
         this.duration = duration;
-        this.subscriberList = subscriberList;
+        this.fraisDeBase = fraisDeBase;
+        this.chargeAc = chargeAc;
+        this.chargeDc = chargeDc;
+        this.isChargeRapideActive = isChargeRapideActive;
+        this.chargeRapide= chargeRapide;
     }
 }

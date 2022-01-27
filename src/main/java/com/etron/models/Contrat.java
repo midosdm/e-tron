@@ -28,7 +28,7 @@ import lombok.ToString;
 @Entity
 public class Contrat implements Serializable {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id = 0L;
 
 	@NotBlank(message = "Number contrat cnnot be null")

@@ -16,7 +16,6 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class Subscriber extends AppUser implements Serializable {
 
@@ -27,8 +26,7 @@ public class Subscriber extends AppUser implements Serializable {
 	private LocalDate birthDate;
 
 	@ManyToOne
-	@MapsId("id")
-	@JoinColumn(name = "subscription_id", nullable = false)
+	@JoinColumn(name = "subscription_id")
 	private Subscription subscription;
 
 	private String matricule;
@@ -36,12 +34,12 @@ public class Subscriber extends AppUser implements Serializable {
 //	@OneToMany(mappedBy = "subscriber", cascade = CascadeType.ALL)
 //	private Set<Vehicule> vehiculeList = new HashSet<>();
 
-	public Subscriber(String lastName, String firstName, LocalDate birthDate, Subscription subscription) {
+	public Subscriber(String lastName, String firstName, LocalDate birthDate, String matricule) {
 		super();
 		this.lastName = lastName;
 		this.firstName = firstName;
 		this.birthDate = birthDate;
-		this.subscription = subscription;
+		this.matricule = matricule;
 	}
 
 }

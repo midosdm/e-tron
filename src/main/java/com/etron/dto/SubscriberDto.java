@@ -49,8 +49,6 @@ public class SubscriberDto implements Serializable {
 
     @JsonFormat(pattern = "dd/MM/yyyy")
     @DateTimeFormat(pattern = "dd/MM/yyyy")
-    @JsonDeserialize(using = LocalDateDeserializer.class)
-    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate birthDate;
 
     private Subscription subscription;
