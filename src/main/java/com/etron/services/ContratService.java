@@ -44,16 +44,16 @@ public class ContratService {
 		}
 	}
 
-	public ResponseEntity<List<Contrat>> getContratByNumero(int numeroContrat) {
+	public ResponseEntity<Contrat> getContratByNumero(int numeroContrat) {
 		try {
-			List<Contrat> contrat = new ArrayList<Contrat>();
+			Contrat contrat = new Contrat();
 
 			if (numeroContrat == 0)
 				return new ResponseEntity<>(null, HttpStatus.CONFLICT);
 			else
-				contrat.add(contratRepository.findByNumeroContrat(numeroContrat));
+				contrat = contratRepository.findByNumeroContrat(numeroContrat);
 
-			if (contrat.isEmpty()) {
+			if (contrat == null) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 			}
 
