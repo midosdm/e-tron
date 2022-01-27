@@ -1,6 +1,7 @@
 package com.etron.models;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,11 +24,11 @@ public class Subscriber extends AppUser implements Serializable {
 
 	private String firstName;
 
-	private LocalDateTime birthDate;
+	private LocalDate birthDate;
 
 	@ManyToOne
 	@MapsId("id")
-	@JoinColumn(name = "subscription_id")
+	@JoinColumn(name = "subscription_id", nullable = false)
 	private Subscription subscription;
 
 	private String matricule;
@@ -35,7 +36,7 @@ public class Subscriber extends AppUser implements Serializable {
 //	@OneToMany(mappedBy = "subscriber", cascade = CascadeType.ALL)
 //	private Set<Vehicule> vehiculeList = new HashSet<>();
 
-	public Subscriber(String lastName, String firstName, LocalDateTime birthDate, Subscription subscription) {
+	public Subscriber(String lastName, String firstName, LocalDate birthDate, Subscription subscription) {
 		super();
 		this.lastName = lastName;
 		this.firstName = firstName;

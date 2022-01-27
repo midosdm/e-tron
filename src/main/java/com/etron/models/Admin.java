@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import javax.persistence.Entity;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @SuperBuilder
@@ -18,5 +19,5 @@ public class Admin extends AppUser implements Serializable {
 
     private String firstName;
 
-    private LocalDateTime birthDate;
+    private LocalDate birthDate;
 }

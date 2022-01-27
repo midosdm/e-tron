@@ -32,7 +32,11 @@ public class SubscriberController {
 	@Autowired
 	private SubscriberService subscriberService;
 
-	private ModelMapper modelmapper;
+	private final ModelMapper modelmapper;
+
+	public SubscriberController(ModelMapper modelmapper) {
+		this.modelmapper = modelmapper;
+	}
 
 	private SubscriberDto convertToDto(Subscriber subscriber) {
 		return modelmapper.map(subscriber, SubscriberDto.class);
