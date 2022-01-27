@@ -62,11 +62,12 @@ public class SubscriberService {
 		}
 	}
 
-	public ResponseEntity<?> createSubscriber(Subscriber subscriber) {
+	public ResponseEntity<Subscriber> createSubscriber(Subscriber subscriber) {
 
 		if (subscriberRepository.existsByEmail(subscriber.getEmail().toLowerCase())) {
-			return ResponseEntity.status(HttpStatus.NO_CONTENT)
-					.body(new MessageResponse("Warn: cet email existe déja"));
+//			return ResponseEntity.status(HttpStatus.NO_CONTENT)
+//					.body(new MessageResponse("Warn: cet email existe déja"));
+			new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 		var role = roleRepository.findByAppRole(AppRole.SUBSCRIBER)
 				.orElseGet(() -> roleRepository.save(Role.builder().appRole(AppRole.SUBSCRIBER).build()));

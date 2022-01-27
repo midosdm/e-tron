@@ -31,7 +31,11 @@ public class AdminController {
 	@Autowired
 	private AdminService adminService;
 
-	private ModelMapper modelmapper;
+	private final ModelMapper modelmapper;
+
+	public AdminController(ModelMapper modelmapper) {
+		this.modelmapper = modelmapper;
+	}
 
 	private AdminDto convertToDto(Admin admin) {
 		return modelmapper.map(admin, AdminDto.class);

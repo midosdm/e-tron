@@ -28,7 +28,11 @@ public class AdminService {
 	@Autowired
 	private RoleRepository roleRepository;
 
-	private PasswordEncoder passwordEncoder;
+	private final PasswordEncoder passwordEncoder;
+
+	public AdminService(PasswordEncoder passwordEncoder) {
+		this.passwordEncoder = passwordEncoder;
+	}
 
 	public ResponseEntity<?> getAllAdmins() {
 

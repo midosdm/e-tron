@@ -2,13 +2,15 @@ package com.etron.models;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
@@ -16,7 +18,6 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class Subscriber extends AppUser implements Serializable {
 
@@ -27,7 +28,6 @@ public class Subscriber extends AppUser implements Serializable {
 	private LocalDate birthDate;
 
 	@ManyToOne
-	@MapsId("id")
 	@JoinColumn(name = "subscription_id", nullable = false)
 	private Subscription subscription;
 
@@ -36,12 +36,12 @@ public class Subscriber extends AppUser implements Serializable {
 //	@OneToMany(mappedBy = "subscriber", cascade = CascadeType.ALL)
 //	private Set<Vehicule> vehiculeList = new HashSet<>();
 
-	public Subscriber(String lastName, String firstName, LocalDate birthDate, Subscription subscription) {
+	public Subscriber(String lastName, String firstName, LocalDate birthDate, String matricule) {
 		super();
 		this.lastName = lastName;
 		this.firstName = firstName;
 		this.birthDate = birthDate;
-		this.subscription = subscription;
+		this.matricule = matricule;
 	}
 
 }
