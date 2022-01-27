@@ -5,12 +5,11 @@ import com.etron.models.Subscription;
 import com.etron.services.SubscriptionService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,8 +28,33 @@ public class SubscriptionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Subscription>> getSubscriptions(){
+    public ResponseEntity<List<Subscription>> getAllSubscriptions(){
         return subscriptionService.getAllSubscriptions();
+    }
+
+    @GetMapping(path = "{subscriptionId}")
+    public ResponseEntity<Subscription> getSubscription(@PathVariable("subscriptionId") Long subscriptionId){
+        return subscriptionService.getById(subscriptionId);
+    }
+
+    @PostMapping
+    public ResponseEntity<Subscription> createSubscription(@Valid @RequestBody Subscription subscription){
+        return subscriptionService.createSubscription(subscription);
+    }
+
+    @PutMapping(path="{subscriptionId}")
+    public ResponseEntity<Subscription> updateSubscription(@PathVariable("subscriptionId") Long subscriptionId, @Valid @RequestBody Subscription subscription){
+        return subscriptionService.updateSubscription(subscriptionId, subscription);
+    }
+
+    @DeleteMapping(path="{subscriptionId")
+    public ResponseEntity<HttpStatus> deleteSubscription(@PathVariable("subscriptionId") Long subscriptionId){
+        return subscriptionService.deleteSubscription(subscriptionId);
+    }
+
+    @DeleteMapping()
+    public ResponseEntity<HttpStatus> deleteAllSubscriptions(){
+        return subscriptionService.deleteAllSubscriptions();
     }
 
 
