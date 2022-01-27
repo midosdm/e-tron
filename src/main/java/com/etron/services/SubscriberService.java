@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.etron.models.Role;
-import com.etron.models.enums.AppRole;
-import com.etron.repositories.RoleRepository;
-import com.etron.repositories.AppUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.etron.models.Role;
 import com.etron.models.Subscriber;
+import com.etron.models.enums.AppRole;
+import com.etron.repositories.AppUserRepository;
+import com.etron.repositories.RoleRepository;
 import com.etron.repositories.SubscriberRepository;
 
 @Service
@@ -29,15 +29,12 @@ public class SubscriberService {
 
 	private PasswordEncoder passwordEncoder;
 
-	public ResponseEntity<List<Subscriber>> getAllSubscribers(String firstName) {
+	public ResponseEntity<List<Subscriber>> getAllSubscribers() {
 
 		try {
 			List<Subscriber> subscribers = new ArrayList<Subscriber>();
 
-			if (firstName == null)
-				subscriberRepository.findAll().forEach(subscribers::add);
-			else
-				subscriberRepository.findByFirstNameContaining(firstName).forEach(subscribers::add);
+			subscriberRepository.findAll().forEach(subscribers::add);
 
 			if (subscribers.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -73,7 +70,7 @@ public class SubscriberService {
 		return new ResponseEntity<>(s, HttpStatus.OK);
 	}
 
-	public ResponseEntity<Subscriber> updateAdmin(Long id, Subscriber newSubscriber) {
+	public ResponseEntity<Subscriber> updateSubscriber(Long id, Subscriber newSubscriber) {
 
 		var oldSubscriber = getSubscriberById(id).getBody();
 
@@ -88,7 +85,7 @@ public class SubscriberService {
 		oldSubscriber.setLastName(newSubscriber.getLastName());
 		oldSubscriber.setMatricule(newSubscriber.getMatricule());
 		var a = subscriberRepository.save(oldSubscriber);
-		//var vToken = verificationTokenService.createVerificationToken(a);
+		// var vToken = verificationTokenService.createVerificationToken(a);
 		return new ResponseEntity<>(a, HttpStatus.OK);
 	}
 
@@ -97,7 +94,7 @@ public class SubscriberService {
 		subscriberRepository.updatePassword(id, encPassword);
 	}
 
-	public ResponseEntity<HttpStatus> deleteAdmin(Long id) {
+	public ResponseEntity<HttpStatus> deleteSubscriber(Long id) {
 
 		try {
 			subscriberRepository.deleteById(id);
@@ -108,7 +105,7 @@ public class SubscriberService {
 		}
 	}
 
-	public ResponseEntity<HttpStatus> deleteAllAdmins() {
+	public ResponseEntity<HttpStatus> deleteAllSubscribers() {
 		try {
 			subscriberRepository.deleteAll();
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
