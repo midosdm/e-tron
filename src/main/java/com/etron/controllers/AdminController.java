@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.etron.dto.AdminDto;
+import com.etron.dto.AdminDtoWithoutPassword;
+import com.etron.dto.UserPasswordDto;
 import com.etron.models.Admin;
 import com.etron.services.AdminService;
 
@@ -40,7 +42,7 @@ public class AdminController {
 		return modelmapper.map(adminDto, Admin.class);
 	}
 
-	private Admin convertToEntity(AdminWithoutPasswordDto adminDto) {
+	private Admin convertToEntity(AdminDtoWithoutPassword adminDto) {
 		return modelmapper.map(adminDto, Admin.class);
 	}
 
@@ -65,7 +67,7 @@ public class AdminController {
 
 	@PutMapping(path = "{adminId}")
 	public AdminDto updateAdmin(@PathVariable("adminId") Long adminId,
-			@Valid @RequestBody AdminWithoutPasswordDto adminDto) {
+			@Valid @RequestBody AdminDtoWithoutPassword adminDto) {
 		var admin = convertToEntity(adminDto);
 		var newAdmin = adminService.updateAdmin(adminId, admin).getBody();
 		return convertToDto(newAdmin);
