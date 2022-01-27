@@ -2,16 +2,12 @@ package com.etron.models;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
+import javax.persistence.*;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
@@ -19,6 +15,7 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @ToString
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Subscriber extends AppUser implements Serializable {
 
@@ -32,6 +29,9 @@ public class Subscriber extends AppUser implements Serializable {
 	@MapsId("id")
 	@JoinColumn(name = "subscription_id")
 	private Subscription subscription;
+
+	@OneToMany(mappedBy = "subscriber", cascade = CascadeType.ALL)
+	private Set<Vehicule> vehiculeList = new HashSet<>();
 
 	public Subscriber(String lastName, String firstName, LocalDateTime birthDate, Subscription subscription) {
 		super();
