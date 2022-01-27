@@ -3,6 +3,7 @@ package com.etron.models;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,6 +20,7 @@ public class Subscription implements Serializable{
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id = 0L;
 
+    @NotNull(message = "subcription type cannot be null")
     private String subscriptionType;
 
     private String duration;
@@ -26,14 +28,18 @@ public class Subscription implements Serializable{
     @OneToMany(mappedBy = "subscription", cascade = CascadeType.ALL)
     private Set<Subscriber> subscriberList = new HashSet<>();
 
+    @NotNull(message = "Price cannot be null")
     private Double fraisDeBase;
 
+    @NotNull(message = "Price cannot be null")
     private Double chargeAc;
 
+    @NotNull(message = "Price cannot be null")
     private Double chargeDc;
 
     private boolean isChargeRapideActive;
 
+    @NotNull(message = "Price cannot be null")
     private double chargeRapide;
 
     public Subscription(String subscriptionType, String duration,Double fraisDeBase, Double chargeAc, Double chargeDc, boolean isChargeRapideActive, Double chargeRapide) {
