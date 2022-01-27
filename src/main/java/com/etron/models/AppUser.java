@@ -15,6 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class AppUser implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
