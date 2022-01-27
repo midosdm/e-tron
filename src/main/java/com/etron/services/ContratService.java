@@ -118,23 +118,6 @@ public class ContratService {
 		}
 	}
 
-	public ResponseEntity<Contrat> updateContrat(long id, Contrat contrat) {
-		Optional<Contrat> contratData = contratRepository.findById(id);
-
-		if (contratData.isPresent()) {
-			Contrat _contrat = contratData.get();
-
-			_contrat.setDateDebut(contrat.getDateDebut());
-			_contrat.setDateFin(contrat.getDateFin());
-			_contrat.setNumeroContrat(contrat.getNumeroContrat());
-
-			return new ResponseEntity<>(contratRepository.save(_contrat), HttpStatus.OK);
-
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-	}
-
 	public ResponseEntity<HttpStatus> deleteContrat(Long id) {
 
 		try {

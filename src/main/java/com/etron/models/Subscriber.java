@@ -1,32 +1,44 @@
 package com.etron.models;
 
-import lombok.*;
-import lombok.experimental.SuperBuilder;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
-import java.io.Serializable;
-import java.time.LocalDateTime;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class Subscriber extends User implements Serializable {
 
-    private String lastName;
+	private String lastName;
 
-    private String firstName;
+	private String firstName;
 
-    private LocalDateTime birthDate;
+	private LocalDateTime birthDate;
 
-    @ManyToOne
-    @MapsId("id")
-    @JoinColumn(name="subscription_id")
-    private Subscription subscription;
+	@ManyToOne
+	@MapsId("id")
+	@JoinColumn(name = "subscription_id")
+	private Subscription subscription;
+
+	public Subscriber(String lastName, String firstName, LocalDateTime birthDate, Subscription subscription) {
+		super();
+		this.lastName = lastName;
+		this.firstName = firstName;
+		this.birthDate = birthDate;
+		this.subscription = subscription;
+	}
+
 }
