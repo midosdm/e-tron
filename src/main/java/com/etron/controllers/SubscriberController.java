@@ -65,7 +65,7 @@ public class SubscriberController {
 	@PostMapping
 	public SubscriberDto createSubscriber(@Valid @RequestBody SubscriberDto newSubscriberDto) {
 		var subscriber = convertToEntity(newSubscriberDto);
-		var newSubscriber = subscriberService.createSubscriber(subscriber).getBody();
+		var newSubscriber = (Subscriber) subscriberService.createSubscriber(subscriber).getBody();
 		return convertToDto(newSubscriber);
 	}
 
