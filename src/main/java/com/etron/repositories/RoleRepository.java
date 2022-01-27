@@ -9,5 +9,4 @@ import com.etron.models.enums.AppRole;
 
 public interface RoleRepository extends JpaRepository<Role, Long> {
 	Optional<Role> findByAppRole(AppRole appRole);
-
 }
