@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.etron.dto.SubscriberDto;
+import com.etron.dto.SubscriberDtoWithoutPassoword;
+import com.etron.dto.UserPasswordDto;
 import com.etron.models.Subscriber;
 import com.etron.services.SubscriberService;
 
@@ -40,7 +42,7 @@ public class SubscriberController {
 		return modelmapper.map(subscriberDto, Subscriber.class);
 	}
 
-	private Subscriber convertToEntity(SubscriberWithoutPasswordDto subscriberDto) {
+	private Subscriber convertToEntity(SubscriberDtoWithoutPassoword subscriberDto) {
 		return modelmapper.map(subscriberDto, Subscriber.class);
 	}
 
@@ -65,7 +67,7 @@ public class SubscriberController {
 
 	@PutMapping(path = "{subscriberId}")
 	public SubscriberDto updateAdmin(@PathVariable("adminId") Long subscriberId,
-			@Valid @RequestBody SubscriberWithoutPasswordDto subscriberDto) {
+			@Valid @RequestBody SubscriberDtoWithoutPassoword subscriberDto) {
 		var subscriber = convertToEntity(subscriberDto);
 		var newSubscriber = subscriberService.updateSubscriber(subscriberId, subscriber).getBody();
 		return convertToDto(newSubscriber);
