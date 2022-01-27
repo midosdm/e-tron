@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.etron.exceptions.MessageResponse;
 import com.etron.models.Role;
 import com.etron.models.Subscriber;
 import com.etron.models.enums.AppRole;
@@ -33,7 +34,7 @@ public class SubscriberService {
 		this.passwordEncoder = passwordEncoder;
 	}
 
-	public ResponseEntity<List<Subscriber>> getAllSubscribers() {
+	public ResponseEntity<?> getAllSubscribers() {
 
 		try {
 			List<Subscriber> subscribers = new ArrayList<Subscriber>();
@@ -41,12 +42,13 @@ public class SubscriberService {
 			subscriberRepository.findAll().forEach(subscribers::add);
 
 			if (subscribers.isEmpty()) {
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+				return new ResponseEntity<>(subscribers, HttpStatus.NO_CONTENT);
 			}
 
 			return new ResponseEntity<>(subscribers, HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new MessageResponse("Error: INTERNAL SERVER ERROR"));
 		}
 	}
 
@@ -60,10 +62,11 @@ public class SubscriberService {
 		}
 	}
 
-	public ResponseEntity<Subscriber> createSubscriber(Subscriber subscriber) {
+	public ResponseEntity<?> createSubscriber(Subscriber subscriber) {
 
 		if (subscriberRepository.existsByEmail(subscriber.getEmail().toLowerCase())) {
-			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+			return ResponseEntity.status(HttpStatus.NO_CONTENT)
+					.body(new MessageResponse("Warn: cet email existe déja"));
 		}
 		var role = roleRepository.findByAppRole(AppRole.SUBSCRIBER)
 				.orElseGet(() -> roleRepository.save(Role.builder().appRole(AppRole.SUBSCRIBER).build()));
@@ -74,13 +77,14 @@ public class SubscriberService {
 		return new ResponseEntity<>(s, HttpStatus.OK);
 	}
 
-	public ResponseEntity<Subscriber> updateSubscriber(Long id, Subscriber newSubscriber) {
+	public ResponseEntity<?> updateSubscriber(Long id, Subscriber newSubscriber) {
 
 		var oldSubscriber = getSubscriberById(id).getBody();
 
 		if (appUserRepository.existsByEmail(newSubscriber.getEmail().toLowerCase())
 				&& !newSubscriber.getEmail().equals(oldSubscriber.getEmail().toLowerCase())) {
-			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+			return ResponseEntity.status(HttpStatus.NO_CONTENT)
+					.body(new MessageResponse("Warn: cet email existe déja"));
 		}
 
 		oldSubscriber.setEmail(newSubscriber.getEmail());
@@ -98,23 +102,25 @@ public class SubscriberService {
 		subscriberRepository.updatePassword(id, encPassword);
 	}
 
-	public ResponseEntity<HttpStatus> deleteSubscriber(Long id) {
+	public ResponseEntity<?> deleteSubscriber(Long id) {
 
 		try {
 			subscriberRepository.deleteById(id);
-
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new MessageResponse("Error: INTERNAL SERVER ERROR"));
 		}
 	}
 
-	public ResponseEntity<HttpStatus> deleteAllSubscribers() {
+	public ResponseEntity<?> deleteAllSubscribers() {
 		try {
 			subscriberRepository.deleteAll();
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			return ResponseEntity.status(HttpStatus.NO_CONTENT)
+					.body(new MessageResponse("Warn: Aucun subscriber dans la BDD"));
 		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new MessageResponse("Error: INTERNAL SERVER ERROR"));
 		}
 	}
 }

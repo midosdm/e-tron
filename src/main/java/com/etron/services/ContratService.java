@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.etron.exceptions.MessageResponse;
 import com.etron.models.Contrat;
 import com.etron.models.Subscriber;
 import com.etron.models.Subscription;
@@ -27,7 +28,7 @@ public class ContratService {
 	@Autowired
 	SubscriptionRepository subscriptionRepository;
 
-	public ResponseEntity<List<Contrat>> getAllContrats() {
+	public ResponseEntity<?> getAllContrats() {
 
 		try {
 			List<Contrat> contrats = new ArrayList<Contrat>();
@@ -35,35 +36,40 @@ public class ContratService {
 			contratRepository.findAll().forEach(contrats::add);
 
 			if (contrats.isEmpty()) {
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+				return ResponseEntity.status(HttpStatus.NO_CONTENT)
+						.body(new MessageResponse("Warn: Aucun contrat dans la BDD"));
 			}
 
 			return new ResponseEntity<>(contrats, HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new MessageResponse("Error: INTERNAL SERVER ERROR"));
 		}
 	}
 
-	public ResponseEntity<Contrat> getContratByNumero(int numeroContrat) {
+	public ResponseEntity<?> getContratByNumero(int numeroContrat) {
 		try {
 			Contrat contrat = new Contrat();
 
 			if (numeroContrat == 0)
-				return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+				return ResponseEntity.status(HttpStatus.CONFLICT)
+						.body(new MessageResponse("Error: Numero contrat cannot be null"));
 			else
 				contrat = contratRepository.findByNumeroContrat(numeroContrat);
 
 			if (contrat == null) {
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new MessageResponse(
+						"Warn: Aucun contrat avec le numero " + numeroContrat + "exite dans la BDD"));
 			}
 
 			return new ResponseEntity<>(contrat, HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new MessageResponse("Error: INTERNAL SERVER ERROR"));
 		}
 	}
 
-	public ResponseEntity<List<Contrat>> getByDateDebut(LocalDate dateDebut) {
+	public ResponseEntity<?> getByDateDebut(LocalDate dateDebut) {
 
 		try {
 			List<Contrat> contrats = new ArrayList<Contrat>();
@@ -72,11 +78,12 @@ public class ContratService {
 
 			return new ResponseEntity<>(contrats, HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new MessageResponse("Error: INTERNAL SERVER ERROR"));
 		}
 	}
 
-	public ResponseEntity<List<Contrat>> getByDateFin(LocalDate dateFin) {
+	public ResponseEntity<?> getByDateFin(LocalDate dateFin) {
 
 		try {
 			List<Contrat> contrats = new ArrayList<Contrat>();
@@ -85,15 +92,17 @@ public class ContratService {
 
 			return new ResponseEntity<>(contrats, HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new MessageResponse("Error: INTERNAL SERVER ERROR"));
 		}
 	}
 
-	public ResponseEntity<Contrat> createContrat(Long idSubscription, Long idSubscriber, int numeroContrat,
+	public ResponseEntity<?> createContrat(Long idSubscription, Long idSubscriber, int numeroContrat,
 			LocalDate dateDebut, LocalDate dateFin) {
 
 		if (contratRepository.existsByNumeroContrat(numeroContrat)) {
-			return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+			return ResponseEntity.status(HttpStatus.CONFLICT)
+					.body(new MessageResponse("Error: Numero contrat exists already"));
 		}
 
 		Optional<Subscriber> subscriber = subscriberRepository.findById(idSubscriber);
@@ -104,37 +113,40 @@ public class ContratService {
 					.save(new Contrat(numeroContrat, dateDebut, dateFin, subscription.get(), subscriber.get()));
 			return new ResponseEntity<>(_contrat, HttpStatus.CREATED);
 		} else {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new MessageResponse("Error: INTERNAL SERVER ERROR"));
 		}
 	}
 
-	public ResponseEntity<Contrat> getContratById(Long id) {
+	public ResponseEntity<?> getContratById(Long id) {
 		Optional<Contrat> contrat = contratRepository.findById(id);
 
 		if (contrat.isPresent()) {
 			return new ResponseEntity<>(contrat.get(), HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("Error: Contrat not found"));
 		}
 	}
 
-	public ResponseEntity<HttpStatus> deleteContrat(Long id) {
+	public ResponseEntity<?> deleteContrat(Long id) {
 
 		try {
 			contratRepository.deleteById(id);
 
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new MessageResponse("Error: INTERNAL SERVER ERROR"));
 		}
 	}
 
-	public ResponseEntity<HttpStatus> deleteAllContrats() {
+	public ResponseEntity<?> deleteAllContrats() {
 		try {
 			contratRepository.deleteAll();
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new MessageResponse("Error: INTERNAL SERVER ERROR"));
 		}
 	}
 
