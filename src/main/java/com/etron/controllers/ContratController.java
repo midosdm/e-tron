@@ -2,16 +2,14 @@ package com.etron.controllers;
 
 import java.time.LocalDate;
 
+import com.etron.models.Contrat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.etron.services.ContratService;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/api/v1/contrats")
@@ -46,10 +44,10 @@ public class ContratController {
 		return contratService.getContratByNumero(numeroContrat);
 	}
 
-	@PostMapping("/{idSubscription}/{idSubscriber}/{numContrat}")
+	@PostMapping("/{idSubscription}/{idSubscriber}")
 	public ResponseEntity<?> createContrat(@PathVariable("idSubscription") Long idSubscription,
-			@PathVariable("idSubscriber") Long idSubscriber, @PathVariable("numContrat") int numeroContrat) {
-		return contratService.createContrat(idSubscription, idSubscriber, numeroContrat);
+										   @PathVariable("idSubscriber") Long idSubscriber, @Valid  @RequestBody Contrat contrat) {
+		return contratService.createContrat(idSubscription, idSubscriber, contrat);
 	}
 
 	@DeleteMapping("/{id}")
