@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.etron.exceptions.EmailIsTakenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -68,23 +69,18 @@ public class SubscriberService {
 
 	public ResponseEntity<?> createSubscriber(Subscriber subscriber) {
 
-		try {
-			if (subscriberRepository.existsByEmail(subscriber.getEmail().toLowerCase())) {
-				Subscriber sub = new Subscriber();
-				return new ResponseEntity<>(HttpStatus.CONFLICT);
-			}
-			var role = roleRepository.findByAppRole(AppRole.SUBSCRIBER)
-					.orElseGet(() -> roleRepository.save(Role.builder().appRole(AppRole.SUBSCRIBER).build()));
-
-			subscriber.setRole(role);
-			subscriber.setPassword(passwordEncoder.encode(subscriber.getPassword()));
-			var s = subscriberRepository.save(subscriber);
-			return new ResponseEntity<>(s, HttpStatus.OK);
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(new MessageResponse("Error: INTERNAL SERVER ERROR"));
+		if (subscriberRepository.existsByEmail(subscriber.getEmail().toLowerCase())) {
+			throw new EmailIsTakenException(subscriber.getEmail());
 		}
+		var role = roleRepository.findByAppRole(AppRole.SUBSCRIBER)
+				.orElseGet(() -> roleRepository.save(Role.builder().appRole(AppRole.SUBSCRIBER).build()));
+
+		subscriber.setRole(role);
+		subscriber.setPassword(passwordEncoder.encode(subscriber.getPassword()));
+		var s = subscriberRepository.save(subscriber);
+		return new ResponseEntity<>(s, HttpStatus.OK);
 	}
+
 
 	public ResponseEntity<?> updateSubscriber(Long id, Subscriber newSubscriber) {
 
@@ -92,8 +88,7 @@ public class SubscriberService {
 
 		if (appUserRepository.existsByEmail(newSubscriber.getEmail().toLowerCase())
 				&& !newSubscriber.getEmail().equals(oldSubscriber.getEmail().toLowerCase())) {
-			return ResponseEntity.status(HttpStatus.NO_CONTENT)
-					.body(new MessageResponse("Warn: cet email existe déja"));
+			throw new EmailIsTakenException(newSubscriber.getEmail());
 		}
 
 		oldSubscriber.setEmail(newSubscriber.getEmail());
