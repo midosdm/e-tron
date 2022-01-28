@@ -34,13 +34,13 @@ public class Contrat implements Serializable {
 	@NotBlank(message = "Number contrat cnnot be null")
 	private int numeroContrat;
 
-	@NotBlank(message = "date debut cannot be null")
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private LocalDate dateDebut;
-
-	@NotBlank(message = "date fin cannot be null")
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private LocalDate dateFin;
+//	@NotBlank(message = "date debut cannot be null")
+//	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+//	private LocalDate dateDebut;
+//
+//	@NotBlank(message = "date fin cannot be null")
+//	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+//	private LocalDate dateFin;
 
 	@ManyToOne
 	@JoinColumn(name = "subscription_id")
@@ -50,12 +50,12 @@ public class Contrat implements Serializable {
 	@JoinColumn(name = "subscriber_id")
 	private Subscriber subscriber;
 
-	public Contrat(int numeroContrat, LocalDate dateDebut, LocalDate dateFin, Subscription subscription,
+	public Contrat(int numeroContrat, Subscription subscription,
 			Subscriber subscriber) {
 		super();
 		this.numeroContrat = numeroContrat;
-		this.dateDebut = dateDebut;
-		this.dateFin = dateFin;
+//		this.dateDebut = dateDebut;
+//		this.dateFin = dateFin;
 		this.subscription = subscription;
 		this.subscriber = subscriber;
 	}

@@ -26,7 +26,7 @@ public class Subscriber extends AppUser implements Serializable {
 	private LocalDate birthDate;
 
 	@ManyToOne
-	@JoinColumn(name = "subscription_id")
+	@JoinColumn(name = "subscription_id",nullable=false)
 	private Subscription subscription;
 
 	private String matricule;

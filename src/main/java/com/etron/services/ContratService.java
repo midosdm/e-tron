@@ -69,36 +69,35 @@ public class ContratService {
 		}
 	}
 
-	public ResponseEntity<?> getByDateDebut(LocalDate dateDebut) {
+//	public ResponseEntity<?> getByDateDebut(LocalDate dateDebut) {
+//
+//		try {
+//			List<Contrat> contrats = new ArrayList<Contrat>();
+//
+//			contratRepository.findByDateDebut(dateDebut).forEach(contrats::add);
+//
+//			return new ResponseEntity<>(contrats, HttpStatus.OK);
+//		} catch (Exception e) {
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//					.body(new MessageResponse("Error: INTERNAL SERVER ERROR"));
+//		}
+//	}
 
-		try {
-			List<Contrat> contrats = new ArrayList<Contrat>();
+//	public ResponseEntity<?> getByDateFin(LocalDate dateFin) {
+//
+//		try {
+//			List<Contrat> contrats = new ArrayList<Contrat>();
+//
+//			contratRepository.findByDateDebut(dateFin).forEach(contrats::add);
+//
+//			return new ResponseEntity<>(contrats, HttpStatus.OK);
+//		} catch (Exception e) {
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//					.body(new MessageResponse("Error: INTERNAL SERVER ERROR"));
+//		}
+//	}
 
-			contratRepository.findByDateDebut(dateDebut).forEach(contrats::add);
-
-			return new ResponseEntity<>(contrats, HttpStatus.OK);
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(new MessageResponse("Error: INTERNAL SERVER ERROR"));
-		}
-	}
-
-	public ResponseEntity<?> getByDateFin(LocalDate dateFin) {
-
-		try {
-			List<Contrat> contrats = new ArrayList<Contrat>();
-
-			contratRepository.findByDateDebut(dateFin).forEach(contrats::add);
-
-			return new ResponseEntity<>(contrats, HttpStatus.OK);
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(new MessageResponse("Error: INTERNAL SERVER ERROR"));
-		}
-	}
-
-	public ResponseEntity<?> createContrat(Long idSubscription, Long idSubscriber, int numeroContrat,
-			LocalDate dateDebut, LocalDate dateFin) {
+	public ResponseEntity<?> createContrat(Long idSubscription, Long idSubscriber, int numeroContrat) {
 
 		if (contratRepository.existsByNumeroContrat(numeroContrat)) {
 			return ResponseEntity.status(HttpStatus.CONFLICT)
@@ -110,7 +109,7 @@ public class ContratService {
 
 		if (subscriber.isPresent() && subscription.isPresent()) {
 			Contrat _contrat = contratRepository
-					.save(new Contrat(numeroContrat, dateDebut, dateFin, subscription.get(), subscriber.get()));
+					.save(new Contrat(numeroContrat, subscription.get(), subscriber.get()));
 			return new ResponseEntity<>(_contrat, HttpStatus.CREATED);
 		} else {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -26,15 +26,15 @@ public class ContratController {
 		return contratService.getAllContrats();
 	}
 
-	@GetMapping("/annee/{dateFin}")
-	public ResponseEntity<?> getByDateFin(@PathVariable("dateFin") LocalDate dateFin) {
-		return contratService.getByDateFin(dateFin);
-	}
+//	@GetMapping("/annee/{dateFin}")
+//	public ResponseEntity<?> getByDateFin(@PathVariable("dateFin") LocalDate dateFin) {
+//		return contratService.getByDateFin(dateFin);
+//	}
 
-	@GetMapping("/annee/{dateDebut}")
-	public ResponseEntity<?> getByDateDebut(@PathVariable("dateFin") LocalDate dateDebut) {
-		return contratService.getByDateDebut(dateDebut);
-	}
+//	@GetMapping("/annee/{dateDebut}")
+//	public ResponseEntity<?> getByDateDebut(@PathVariable("dateFin") LocalDate dateDebut) {
+//		return contratService.getByDateDebut(dateDebut);
+//	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getContratById(@PathVariable("id") Long id) {
@@ -46,11 +46,10 @@ public class ContratController {
 		return contratService.getContratByNumero(numeroContrat);
 	}
 
-	@PostMapping("/{idSubscription}/{idSubscriber}/{numContrat}/{dateDebut}/{dateFin}/")
+	@PostMapping("/{idSubscription}/{idSubscriber}/{numContrat}")
 	public ResponseEntity<?> createContrat(@PathVariable("idSubscription") Long idSubscription,
-			@PathVariable("idSubscriber") Long idSubscriber, @PathVariable("numContrat") int numeroContrat,
-			@PathVariable("dateDebut") LocalDate dateDebut, @PathVariable("dateFin") LocalDate dateFin) {
-		return contratService.createContrat(idSubscription, idSubscriber, numeroContrat, dateDebut, dateFin);
+			@PathVariable("idSubscriber") Long idSubscriber, @PathVariable("numContrat") int numeroContrat) {
+		return contratService.createContrat(idSubscription, idSubscriber, numeroContrat);
 	}
 
 	@DeleteMapping("/{id}")

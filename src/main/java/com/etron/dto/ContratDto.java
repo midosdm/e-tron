@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Builder
 @Getter
@@ -29,11 +30,13 @@ public class ContratDto implements Serializable {
 	@NotBlank(message = "Number contrat cnnot be null")
 	private int numeroContrat;
 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private LocalDate dateDebut;
-
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-	private LocalDate dateFin;
+//	@JsonFormat(pattern = "dd-MM-yyyy")
+//	@DateTimeFormat(pattern = "dd-MM-yyyy")
+//	private LocalDate dateDebut;
+//
+//	@JsonFormat(pattern = "dd-MM-yyyy")
+//	@DateTimeFormat(pattern = "dd-MM-yyyy")
+//	private LocalDate dateFin;
 
 	private Set<Subscriber> subscriptionList = new HashSet<>();
 
