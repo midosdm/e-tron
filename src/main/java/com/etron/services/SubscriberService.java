@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.etron.exceptions.EmailIsTakenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,8 +66,7 @@ public class SubscriberService {
 	public ResponseEntity<?> createSubscriber(Subscriber subscriber) {
 
 		if (subscriberRepository.existsByEmail(subscriber.getEmail().toLowerCase())) {
-			return ResponseEntity.status(HttpStatus.NO_CONTENT)
-					.body(new MessageResponse("Warn: cet email existe déja"));
+			throw new EmailIsTakenException(subscriber.getEmail());
 		}
 		var role = roleRepository.findByAppRole(AppRole.SUBSCRIBER)
 				.orElseGet(() -> roleRepository.save(Role.builder().appRole(AppRole.SUBSCRIBER).build()));
@@ -83,8 +83,7 @@ public class SubscriberService {
 
 		if (appUserRepository.existsByEmail(newSubscriber.getEmail().toLowerCase())
 				&& !newSubscriber.getEmail().equals(oldSubscriber.getEmail().toLowerCase())) {
-			return ResponseEntity.status(HttpStatus.NO_CONTENT)
-					.body(new MessageResponse("Warn: cet email existe déja"));
+				throw new EmailIsTakenException(newSubscriber.getEmail());
 		}
 
 		oldSubscriber.setEmail(newSubscriber.getEmail());

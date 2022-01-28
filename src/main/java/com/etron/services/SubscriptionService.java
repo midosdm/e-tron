@@ -54,7 +54,7 @@ public class SubscriptionService {
 	public ResponseEntity<?> getById(Long id) {
 		try {
 			Subscription subscription = new Subscription();
-			subscription = subscriptionRepository.getById(id);
+			subscription = subscriptionRepository.findById(id).get();
 			if (subscription == null) {
 				return ResponseEntity.status(HttpStatus.NO_CONTENT)
 						.body(new MessageResponse("Warn: Aucune abonnement dans la BDD avec l'id " + id));

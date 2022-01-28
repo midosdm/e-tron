@@ -28,69 +28,69 @@ import com.etron.services.SubscriberService;
 
 public class SubscriberController {
 
-	@Autowired
-	private SubscriberService subscriberService;
+    @Autowired
+    private SubscriberService subscriberService;
 
-	private final ModelMapper modelmapper;
+    private final ModelMapper modelmapper;
 
-	public SubscriberController(ModelMapper modelmapper) {
-		this.modelmapper = modelmapper;
-	}
+    public SubscriberController(ModelMapper modelmapper) {
+        this.modelmapper = modelmapper;
+    }
 
-	private SubscriberDto convertToDto(Subscriber subscriber) {
-		return modelmapper.map(subscriber, SubscriberDto.class);
-	}
+    private SubscriberDto convertToDto(Subscriber subscriber) {
+        return modelmapper.map(subscriber, SubscriberDto.class);
+    }
 
-	private Subscriber convertToEntity(SubscriberDto subscriberDto) {
-		return modelmapper.map(subscriberDto, Subscriber.class);
-	}
+    private Subscriber convertToEntity(SubscriberDto subscriberDto) {
+        return modelmapper.map(subscriberDto, Subscriber.class);
+    }
 
-	private Subscriber convertToEntity(SubscriberDtoWithoutPassoword subscriberDto) {
-		return modelmapper.map(subscriberDto, Subscriber.class);
-	}
+    private Subscriber convertToEntity(SubscriberDtoWithoutPassoword subscriberDto) {
+        return modelmapper.map(subscriberDto, Subscriber.class);
+    }
 
-	@GetMapping
-	public List<SubscriberDto> getAllSubscribers() {
-		@SuppressWarnings("unchecked")
-		List<Subscriber> subscriberList = (List<Subscriber>) subscriberService.getAllSubscribers().getBody();
-		return subscriberList.stream().map(this::convertToDto).collect(Collectors.toList());
-	}
+    @GetMapping
+    public List<SubscriberDto> getAllSubscribers() {
+        @SuppressWarnings("unchecked")
+        List<Subscriber> subscriberList = (List<Subscriber>) subscriberService.getAllSubscribers().getBody();
+        return subscriberList.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
 
-	@GetMapping(path = "{subscriberId}")
-	public SubscriberDto getSubscriberById(@PathVariable("subscriberId") Long subscriberId) {
-		var subscriber = subscriberService.getSubscriberById(subscriberId).getBody();
-		return convertToDto(subscriber);
-	}
+    @GetMapping(path = "{subscriberId}")
+    public SubscriberDto getSubscriberById(@PathVariable("subscriberId") Long subscriberId) {
+        var subscriber = subscriberService.getSubscriberById(subscriberId).getBody();
+        return convertToDto(subscriber);
+    }
 
-	@PostMapping
-	public SubscriberDto createSubscriber(@Valid @RequestBody SubscriberDto newSubscriberDto) {
-		var subscriber = convertToEntity(newSubscriberDto);
-		var newSubscriber = (Subscriber) subscriberService.createSubscriber(subscriber).getBody();
-		return convertToDto(newSubscriber);
-	}
+    @PostMapping
+    public SubscriberDto createSubscriber(@Valid @RequestBody SubscriberDto newSubscriberDto) {
+        var subscriber = convertToEntity(newSubscriberDto);
+        var newSubscriber = (Subscriber) subscriberService.createSubscriber(subscriber).getBody();
+        return convertToDto(newSubscriber);
+    }
 
-	@PutMapping(path = "{subscriberId}")
-	public SubscriberDto updateAdmin(@PathVariable("adminId") Long subscriberId,
-			@Valid @RequestBody SubscriberDtoWithoutPassoword subscriberDto) {
-		var subscriber = convertToEntity(subscriberDto);
-		var newSubscriber = (Subscriber) subscriberService.updateSubscriber(subscriberId, subscriber).getBody();
-		return convertToDto(newSubscriber);
-	}
+    @PutMapping(path = "{subscriberId}")
+    public SubscriberDto updateSubscriber(@PathVariable("subscriberId") Long subscriberId,
+                                     @Valid @RequestBody SubscriberDtoWithoutPassoword subscriberDto) {
+        var subscriber = convertToEntity(subscriberDto);
+        var newSubscriber = (Subscriber) subscriberService.updateSubscriber(subscriberId, subscriber).getBody();
+        return convertToDto(newSubscriber);
+    }
 
-	@PutMapping(path = "{subscriberId}/password")
-	public void updatePassword(@PathVariable("subscriberId") Long subscriberId,
-			@Valid @RequestBody UserPasswordDto userPasswordDto) {
-		subscriberService.updatePassword(subscriberId, userPasswordDto.getPassword());
-	}
+    @PutMapping(path = "{subscriberId}/password")
+    public void updatePassword(@PathVariable("subscriberId") Long subscriberId,
+                               @Valid @RequestBody UserPasswordDto userPasswordDto) {
+        subscriberService.updatePassword(subscriberId, userPasswordDto.getPassword());
+    }
 
-	@DeleteMapping(path = "{subscriberId}")
-	public ResponseEntity<?> deleteAdmin(@PathVariable("subscriberId") Long subscriberId) {
-		return subscriberService.deleteSubscriber(subscriberId);
-	}
+    @DeleteMapping(path = "{subscriberId}")
+    public ResponseEntity<?> deleteAdmin(@PathVariable("subscriberId") Long subscriberId) {
+        return subscriberService.deleteSubscriber(subscriberId);
+    }
 
-	@DeleteMapping
-	public ResponseEntity<?> deleteAllAdmins() {
-		return subscriberService.deleteAllSubscribers();
-	}
+    @DeleteMapping
+    public ResponseEntity<?> deleteAllAdmins() {
+        return subscriberService.deleteAllSubscribers();
+    }
 
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.etron.exceptions.EmailIsTakenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,8 +66,7 @@ public class AdminService {
 	public ResponseEntity<?> createAdmin(Admin admin) {
 
 		if (appUserRepository.existsByEmail(admin.getEmail().toLowerCase())) {
-			return ResponseEntity.status(HttpStatus.NO_CONTENT)
-					.body(new MessageResponse("Warn: cet email existe déja"));
+			throw new EmailIsTakenException(admin.getEmail());
 		}
 
 		var role = roleRepository.findByAppRole(AppRole.ADMIN)
@@ -87,8 +87,7 @@ public class AdminService {
 
 		if (appUserRepository.existsByEmail(newAdmin.getEmail().toLowerCase())
 				&& !newAdmin.getEmail().equals(oldAdmin.getEmail().toLowerCase())) {
-			return ResponseEntity.status(HttpStatus.NO_CONTENT)
-					.body(new MessageResponse("Warn: cet email existe déja"));
+			throw new EmailIsTakenException(newAdmin.getEmail());
 		}
 
 		oldAdmin.setEmail(newAdmin.getEmail());
