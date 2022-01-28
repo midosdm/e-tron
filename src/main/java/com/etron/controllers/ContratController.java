@@ -46,13 +46,13 @@ public class ContratController {
 		return contratService.getContratById(id);
 	}
 
-	@GetMapping("/{numeroContrat}")
+	@GetMapping("/getByNumero/{numeroContrat}")
 	public ResponseEntity<?> getContratByNumero(@PathVariable("numeroContrat") int numeroContrat) {
 		return contratService.getContratByNumero(numeroContrat);
 	}
 
 	@PostMapping("/createContrat")
-	public ResponseEntity<?> createContrat(@RequestParam("idSubscription") Long idSubscription,
+	public ResponseEntity<?> createContrat(@Valid @RequestParam("idSubscription") Long idSubscription,
 			@RequestParam("idSubscriber") Long idSubscriber, @Valid @RequestBody Contrat contrat) {
 		return contratService.createContrat(idSubscription, idSubscriber, contrat);
 	}

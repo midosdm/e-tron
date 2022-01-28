@@ -44,7 +44,7 @@ public class SubscriptionController {
 	}
 
 	@PutMapping(path = "{subscriptionId}")
-	public ResponseEntity<?> updateSubscription(@PathVariable("subscriptionId") Long subscriptionId,
+	public ResponseEntity<?> updateSubscription(@Valid @PathVariable("subscriptionId") Long subscriptionId,
 			@Valid @RequestBody Subscription subscription) {
 		return subscriptionService.updateSubscription(subscriptionId, subscription);
 	}

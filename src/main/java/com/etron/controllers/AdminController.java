@@ -75,7 +75,7 @@ public class AdminController {
 	}
 
 	@PutMapping(path = "{adminId}")
-	public AdminDto updateAdmin(@PathVariable("adminId") Long adminId,
+	public AdminDto updateAdmin(@Valid @PathVariable("adminId") Long adminId,
 			@Valid @RequestBody AdminDtoWithoutPassword adminDto) {
 		var admin = convertToEntity(adminDto);
 		var newAdmin = (Admin) adminService.updateAdmin(adminId, admin).getBody();

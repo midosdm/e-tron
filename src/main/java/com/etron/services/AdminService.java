@@ -85,8 +85,7 @@ public class AdminService {
 
 		var oldAdmin = getAdminById(id).getBody();
 
-		if (appUserRepository.existsByEmail(newAdmin.getEmail().toLowerCase())
-				&& !newAdmin.getEmail().equals(oldAdmin.getEmail().toLowerCase())) {
+		if (appUserRepository.existsByEmail(newAdmin.getEmail().toLowerCase()) && !newAdmin.getEmail().equals(oldAdmin.getEmail().toLowerCase())) {
 			throw new EmailIsTakenException(newAdmin.getEmail());
 		}
 

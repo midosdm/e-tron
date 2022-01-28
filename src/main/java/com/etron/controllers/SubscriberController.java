@@ -70,7 +70,7 @@ public class SubscriberController {
     }
 
     @PutMapping(path = "{subscriberId}")
-    public SubscriberDto updateSubscriber(@PathVariable("subscriberId") Long subscriberId,
+    public SubscriberDto updateSubscriber(@Valid @PathVariable("subscriberId") Long subscriberId,
                                      @Valid @RequestBody SubscriberDtoWithoutPassoword subscriberDto) {
         var subscriber = convertToEntity(subscriberDto);
         var newSubscriber = (Subscriber) subscriberService.updateSubscriber(subscriberId, subscriber).getBody();
