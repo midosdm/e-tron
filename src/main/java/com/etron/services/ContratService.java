@@ -27,6 +27,10 @@ public class ContratService {
 	SubscriberRepository subscriberRepository;
 	@Autowired
 	SubscriptionRepository subscriptionRepository;
+	@Autowired
+	SubscriptionService subscriptionService;
+	@Autowired
+	SubscriberService subscriberService;
 
 	public ResponseEntity<?> getAllContrats() {
 
@@ -69,33 +73,33 @@ public class ContratService {
 		}
 	}
 
-//	public ResponseEntity<?> getByDateDebut(LocalDate dateDebut) {
-//
-//		try {
-//			List<Contrat> contrats = new ArrayList<Contrat>();
-//
-//			contratRepository.findByDateDebut(dateDebut).forEach(contrats::add);
-//
-//			return new ResponseEntity<>(contrats, HttpStatus.OK);
-//		} catch (Exception e) {
-//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//					.body(new MessageResponse("Error: INTERNAL SERVER ERROR"));
-//		}
-//	}
+	public ResponseEntity<?> getByDateDebut(LocalDate dateDebut) {
 
-//	public ResponseEntity<?> getByDateFin(LocalDate dateFin) {
-//
-//		try {
-//			List<Contrat> contrats = new ArrayList<Contrat>();
-//
-//			contratRepository.findByDateDebut(dateFin).forEach(contrats::add);
-//
-//			return new ResponseEntity<>(contrats, HttpStatus.OK);
-//		} catch (Exception e) {
-//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//					.body(new MessageResponse("Error: INTERNAL SERVER ERROR"));
-//		}
-//	}
+		try {
+			List<Contrat> contrats = new ArrayList<Contrat>();
+
+			contratRepository.findByDateDebut(dateDebut).forEach(contrats::add);
+
+			return new ResponseEntity<>(contrats, HttpStatus.OK);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new MessageResponse("Error: INTERNAL SERVER ERROR"));
+		}
+	}
+
+	public ResponseEntity<?> getByDateFin(LocalDate dateFin) {
+
+		try {
+			List<Contrat> contrats = new ArrayList<Contrat>();
+
+			contratRepository.findByDateDebut(dateFin).forEach(contrats::add);
+
+			return new ResponseEntity<>(contrats, HttpStatus.OK);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new MessageResponse("Error: INTERNAL SERVER ERROR"));
+		}
+	}
 
 	public ResponseEntity<?> createContrat(Long idSubscription, Long idSubscriber, Contrat contrat) {
 
@@ -108,8 +112,12 @@ public class ContratService {
 		Optional<Subscription> subscription = subscriptionRepository.findById(idSubscription);
 
 		if (subscriber.isPresent() && subscription.isPresent()) {
-			Contrat _contrat = contratRepository
-					.save(new Contrat(contrat.getNumeroContrat(), subscription.get(), subscriber.get()));
+
+			subscriptionService.addSubscriber(idSubscriber, idSubscription);
+			subscriberService.addSubscription(idSubscriber, idSubscription);
+
+			Contrat _contrat = contratRepository.save(new Contrat(contrat.getNumeroContrat(), subscription.get(),
+					subscriber.get(), contrat.getDateDebut(), contrat.getDateFin()));
 			return new ResponseEntity<>(_contrat, HttpStatus.CREATED);
 		} else {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
