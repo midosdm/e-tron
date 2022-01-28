@@ -50,8 +50,7 @@ public class Contrat implements Serializable {
 	@JoinColumn(name = "subscriber_id")
 	private Subscriber subscriber;
 
-	public Contrat(int numeroContrat, Subscription subscription,
-			Subscriber subscriber) {
+		public Contrat(int numeroContrat, Subscription subscription, Subscriber subscriber) {
 		super();
 		this.numeroContrat = numeroContrat;
 //		this.dateDebut = dateDebut;

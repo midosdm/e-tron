@@ -97,9 +97,9 @@ public class ContratService {
 //		}
 //	}
 
-	public ResponseEntity<?> createContrat(Long idSubscription, Long idSubscriber, int numeroContrat) {
+	public ResponseEntity<?> createContrat(Long idSubscription, Long idSubscriber, Contrat contrat) {
 
-		if (contratRepository.existsByNumeroContrat(numeroContrat)) {
+		if (contratRepository.existsByNumeroContrat(contrat.getNumeroContrat())) {
 			return ResponseEntity.status(HttpStatus.CONFLICT)
 					.body(new MessageResponse("Error: Numero contrat exists already"));
 		}
@@ -109,7 +109,7 @@ public class ContratService {
 
 		if (subscriber.isPresent() && subscription.isPresent()) {
 			Contrat _contrat = contratRepository
-					.save(new Contrat(numeroContrat, subscription.get(), subscriber.get()));
+					.save(new Contrat(contrat.getNumeroContrat(), subscription.get(), subscriber.get()));
 			return new ResponseEntity<>(_contrat, HttpStatus.CREATED);
 		} else {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
