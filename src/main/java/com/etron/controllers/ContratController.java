@@ -2,14 +2,21 @@ package com.etron.controllers;
 
 import java.time.LocalDate;
 
-import com.etron.models.Contrat;
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.etron.models.Contrat;
 import com.etron.services.ContratService;
-
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping(path = "/api/v1/contrats")
@@ -24,15 +31,15 @@ public class ContratController {
 		return contratService.getAllContrats();
 	}
 
-//	@GetMapping("/annee/{dateFin}")
-//	public ResponseEntity<?> getByDateFin(@PathVariable("dateFin") LocalDate dateFin) {
-//		return contratService.getByDateFin(dateFin);
-//	}
+	@GetMapping("/annee/{dateFin}")
+	public ResponseEntity<?> getByDateFin(@PathVariable("dateFin") LocalDate dateFin) {
+		return contratService.getByDateFin(dateFin);
+	}
 
-//	@GetMapping("/annee/{dateDebut}")
-//	public ResponseEntity<?> getByDateDebut(@PathVariable("dateFin") LocalDate dateDebut) {
-//		return contratService.getByDateDebut(dateDebut);
-//	}
+	@GetMapping("/annee/{dateDebut}")
+	public ResponseEntity<?> getByDateDebut(@PathVariable("dateFin") LocalDate dateDebut) {
+		return contratService.getByDateDebut(dateDebut);
+	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getContratById(@PathVariable("id") Long id) {
@@ -44,9 +51,9 @@ public class ContratController {
 		return contratService.getContratByNumero(numeroContrat);
 	}
 
-	@PostMapping("/{idSubscription}/{idSubscriber}")
-	public ResponseEntity<?> createContrat(@PathVariable("idSubscription") Long idSubscription,
-										   @PathVariable("idSubscriber") Long idSubscriber, @Valid  @RequestBody Contrat contrat) {
+	@PostMapping("/createContrat")
+	public ResponseEntity<?> createContrat(@RequestParam("idSubscription") Long idSubscription,
+			@RequestParam("idSubscriber") Long idSubscriber, @Valid @RequestBody Contrat contrat) {
 		return contratService.createContrat(idSubscription, idSubscriber, contrat);
 	}
 

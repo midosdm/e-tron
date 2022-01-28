@@ -2,13 +2,17 @@ package com.etron.models;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
@@ -27,6 +31,7 @@ public class Subscriber extends AppUser implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name = "subscription_id")
+	@JsonIgnore
 	private Subscription subscription;
 
 	private String matricule;

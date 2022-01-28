@@ -11,13 +11,17 @@ import org.springframework.stereotype.Service;
 
 import com.etron.exceptions.MessageResponse;
 import com.etron.exceptions.TypeIsTakenException;
+import com.etron.models.Subscriber;
 import com.etron.models.Subscription;
+import com.etron.repositories.SubscriberRepository;
 import com.etron.repositories.SubscriptionRepository;
 
 @Service
 public class SubscriptionService {
 	@Autowired
 	SubscriptionRepository subscriptionRepository;
+	@Autowired
+	SubscriberRepository subscriberRepository;
 
 	public ResponseEntity<?> getAllSubscriptions() {
 		try {
@@ -98,13 +102,32 @@ public class SubscriptionService {
 			newSubscription.setChargeAc(subscription.getChargeAc());
 			newSubscription.setChargeDc(subscription.getChargeDc());
 			newSubscription.setChargeRapide(subscription.getChargeRapide());
-			// newSubscription.isChargeRapideActive(subscription.isChargeRapideActive);
+
 			return new ResponseEntity<>(subscriptionRepository.save(newSubscription), HttpStatus.OK);
 
 		} else {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body(new MessageResponse("Error: INTERNAL SERVER ERROR"));
 		}
+	}
+
+	public ResponseEntity<?> addSubscriber(Long idSubscriber, Long idSubscription) {
+
+		Subscriber subscriberData = subscriberRepository.getById(idSubscriber);
+		Optional<Subscription> subscriptionData = subscriptionRepository.findById(idSubscription);
+
+		if (subscriptionData.isPresent()) {
+			Subscription newSubscription = subscriptionData.get();
+
+			newSubscription.getSubscriberList().add(subscriberData);
+
+			return new ResponseEntity<>(subscriptionRepository.save(newSubscription), HttpStatus.OK);
+
+		} else {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new MessageResponse("Error: INTERNAL SERVER ERROR"));
+		}
+
 	}
 
 	public ResponseEntity<?> deleteSubscription(Long id) {
